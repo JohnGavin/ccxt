@@ -1,0 +1,26 @@
+# usethis::use_build_ignore(".lintr")
+# https://github.com/r-lib/lintr#project-configuration
+^\.lintr$
+^\.github$
+^README.Rmd$
+Rcpp
+^_targets.yaml$
+# _targets
+^_targets.R$
+_targets_packages.R
+ccxt.Rproj
+dev
+mlruns
+^ccxt.code-workspace$
+python
+renv
+run.R
+^ohlcv$
+^datasets$
+^inst/extdata$
+^.*\.Rproj$
+^\.Rproj\.user$
+^ccxt.code-workspace$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$

@@ -1,0 +1,39 @@
+Package: ccxt
+Type: Package
+Title: ccxt Analysis
+Version: 0.0.0.9000
+Authors@R: 
+    c(person(given = "John",
+             family = "Gavin",
+             role = c("aut", "cre"),
+             email = "john@1x2.ltd"),
+      person(given = "ESBH",
+             role = "cph"))
+Maintainer: john <john@1x2.ltd>
+Description: |
+	Analysis of crypto markets via `ccxt`.
+License: file LICENSE
+Depends:
+    R (>= 3.5.0)
+Imports: 
+    purrr, dplyr, tibble, rlang, lubridate
+Suggests:
+    targets, tarchetypes, pacman,
+    import, reticulate, 
+    stringr, vroom,
+    here,
+    fusen,
+    knitr, rmarkdown,
+    recipes,
+    ggplot2,
+ 		roxygen2,
+    testthat,
+    tinytest,
+    janitor
+VignetteBuilder: 
+    knitr
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.2
+URL: https://github.com/JohnGavin/ccxt
+BugReports: https://github.com/JohnGavin/ccxt/issues
