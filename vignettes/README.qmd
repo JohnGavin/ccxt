@@ -1,0 +1,71 @@
+---
+title: "ccxt README"
+# subtitle: "Until now!"
+format: markdown_github
+# output:
+#   github_document:
+editor: source
+execute:
+  echo: false
+---
+
+<!-- README.md is generated from README.qmd. 
+  Please edit that file. 
+-->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE, 
+  tidy = "styler",
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# `ccxt` goals
+
+<!-- badges: start -->
+<!-- badges: end -->
+
++ (H) OHLCV snapshots from FTX, Binance and Coinbase.
++ (M) 
++ (L) FTX perpetuals
+
+## Installation
+
+<!-- You can install the released version of ccxt from [CRAN](https://CRAN.R-project.org) with: 
+``` r
+install.packages("ccxt")
+```
+-->
+
++ Development version from
+[GitHub](https://github.com/JohnGavin/ccxt):
+
+``` r
+if (!require(devtools)) install.packages("devtools")
+devtools::install_github("JohnGavin/ccxt")
+```
+
+## Example
+
+```{r example}
+library(ccxt)
+## basic example code
+```
+
+
+### TODOs
++ render `README.Rmd` 
+  - `devtools::build_readme()` 
++ GitHub Actions to re-render `README.Rmd` every time you push. 
+  + See <https://github.com/r-lib/actions/tree/master/examples>
+  + e.g. commit and push to see the updated plots
+
+
+```{r ohlcv, echo = FALSE}
+# ./ccxt/man/figures via fig.path = "man/figures/README-",
+# plot(ohlcv)
+```

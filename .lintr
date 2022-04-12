@@ -1,0 +1,15 @@
+# https://code.visualstudio.com/docs/languages/r
+# https://github.com/r-lib/lintr#project-configuration
+exclusions: list(
+    "man/figures/README-pressure-1.png",
+    "man/ccxt-package.Rd",
+    "vignettes/intro.Rmd",
+    "vignettes/python_data_classes.nb.html",
+    "vignettes/python_data_classes.Rmd"
+  )
+linters: with_defaults(
+  line_length_linter = line_length_linter(120),
+  # line_length_linter(120), 
+  commented_code_linter = NULL,
+  trailing_whitespace_linter = NULL
+  )

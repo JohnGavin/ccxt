@@ -1,0 +1,220 @@
+---
+title: "pyaver api"
+output: html_notebook
+editor_options: 
+  chunk_output_type: inline
+---
+
+## Aver 
++ https://averbet.medium.com
++ https://devpost.com/software/aver-4hduaz
++ decentralized and trustless betting markets 
++ on the Solana blockchain
+  - tokenized bet 
+  + orderbook exchange
+  + fully-collateralized prize funds 
+  + on-chain oracle-driven resolution
++ betting markets with 
+  + liquidity, depth and effective price discovery 
+
++ PyAver - Python SDK - 
+- is facilitating ease of onboarding for market markets, arbitrageurs and algo-traders.
+
+
+### pyaver
+
+```{bash pyaver, eval = FALSE}
+conda env list
+pip install pyaver
+```
+
++ Simple rest APIs to get Uniswap data (DEX Data APIs)
+  + pay for access to trade data
+  + https://bitquery.io/blog/dex-data-apis
+
+### data-classes
+
+```{python data-classes}
+# https://realpython.com/python-data-classes/#
+from dataclasses import dataclass
+@dataclass
+class DataClassCard:
+    rank: str
+    suit: str
+
+queen_of_hearts = DataClassCard('Q', 'Hearts')
+queen_of_hearts.rank
+queen_of_hearts
+# stopifnot?
+queen_of_hearts == DataClassCard('Q', 'Hearts')
+```
+```{python namedtuple v DataClassCard}
+from collections import namedtuple
+NamedTupleCard = namedtuple('NamedTupleCard', ['rank', 'suit'])
+# same output as our DataClassCard example
+queen_of_hearts = NamedTupleCard('Q', 'Hearts')
+queen_of_hearts.rank
+queen_of_hearts
+# data class == named tuple
+queen_of_hearts == NamedTupleCard('Q', 'Hearts')
+# lack of awareness about its own type => hard-to-find bugs
+```
+```{python geographic positions}
+# @dataclass decorator above the class definition
+# fields: type hint is mandatory in data classes
+from typing import Any
+
+@dataclass
+class Position:
+  # list the fields you want in your data class
+  name: str
+  # : == variable annotations => notation used for fields
+  lon: float
+  # default values
+  # == the default values in .__init__() method defn of  a class
+  # cf default_factory - more complicated default values.
+  lat: float  = 0.0
+  name2: Any = 'asdf'
+  value2: Any = 42
+pos = Position('Oslo', 10.8, 59.9)
+print(pos)
+print(f'{pos.name} is at {pos.lat}°N, {pos.lon}°E')
+```
++ data class is a regular Python class
++ implemented basic data model methods: .__init__(), .__repr__(), and .__eq__()
+
+
+```{python import make_dataclass}
+# create data classes similarly to how named tuples are created.
+from dataclasses import make_dataclass
+Position = make_dataclass('Position', ['name', 'lat', 'lon'])
+```
+
+### distance_to method
+```{python distance_to}
+from dataclasses import dataclass
+from math import asin, cos, radians, sin, sqrt
+
+@dataclass
+class Position:
+  name: str
+  lon: float = 0.0
+  lat: float = 0.0
+  
+  def distance_to(self, other):
+      r = 6371  # Earth radius in kilometers
+      lam_1, lam_2 = radians(self.lon), radians(other.lon)
+      phi_1, phi_2 = radians(self.lat), radians(other.lat)
+      h = (sin((phi_2 - phi_1) / 2)**2
+           + cos(phi_1) * cos(phi_2) * sin((lam_2 - lam_1) / 2)**2)
+      return 2 * r * asin(sqrt(h))
+oslo = Position('Oslo', 10.8, 59.9)
+vancouver = Position('Vancouver', -123.1, 49.3)
+oslo.distance_to(vancouver)
+```
+### PlayingCard -> Deck
+```{python PlayingCard -> Deck}
+from dataclasses import dataclass
+from typing import List
+
+@dataclass
+class PlayingCard:
+    rank: str
+    suit: str
+
+@dataclass
+class Deck:
+    cards: List[PlayingCard]
+
+RANKS = '2 3 4 5 6 7 8 9 10 J Q K A'.split()
+# suits are specified using their Unicode symbols.
+SUITS = '♣ ♢ ♡ ♠'.split()
+
+def make_french_deck():
+    return [PlayingCard(r, s) for s in SUITS for r in RANKS]
+make_french_deck()
+
+```
+
+## field() specifier:
++ default_factory to handle mutable default values. 
++ customize each field of a data class individually
+```{python}
+from dataclasses import dataclass, field
+from typing import List
+
+@dataclass
+class Deck:
+    cards: List[PlayingCard] = field(default_factory=make_french_deck)
+
+Deck()
+```
+```{python}
+from dataclasses import dataclass, field
+
+@dataclass
+class Position:
+    name: str
+    lon: float = field(default=0.0, metadata={'unit': 'degrees'})
+    lat: float = field(default=0.0, metadata={'unit': 'degrees'})
+# metadata (any info about a field) retrieved using fields()
+from dataclasses import fields
+fields(Position)
+```
+
+### user-friendly representation of a PlayingCard
+```{python user-friendly representation of a PlayingCard}
+from dataclasses import dataclass
+
+@dataclass
+class PlayingCard:
+    rank: str
+    suit: str
+
+    def __str__(self):
+        return f'{self.suit}{self.rank}'
+ace_of_spades = PlayingCard('A', '♠')
+ace_of_spades
+print(ace_of_spades)
+print(Deck())
+```
+
+
+
+### conveniences data classes provide
++ fields default values
++ ordering data class objects
++ immutable data
++ inheritance
+
+```{r pympler}
+# py_install('pympler')
+```
+
+
+```{python}
+from dataclasses import dataclass
+
+@dataclass
+class SimplePosition:
+    name: str
+    lon: float
+    lat: float
+
+@dataclass
+class SlotPosition:
+    __slots__ = ['name', 'lon', 'lat']
+    name: str
+    lon: float
+    lat: float
+
+from pympler import asizeof
+simple = SimplePosition('London', -0.1, 51.5)
+slot = SlotPosition('Madrid', -3.7, 40.4)
+asizeof.asizesof(simple, slot)
+
+from timeit import timeit
+timeit('slot.name', setup="slot=SlotPosition('Oslo', 10.8, 59.9)", globals=globals())
+timeit('simple.name', setup="simple=SimplePosition('Oslo', 10.8, 59.9)", globals=globals())
+```
+
