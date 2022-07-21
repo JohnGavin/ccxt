@@ -1,0 +1,179 @@
+---
+title: "R Notebook"
+output: html_notebook
+editor_options: 
+  chunk_output_type: inline
+---
+
+https://www.r-bloggers.com/2022/02/r-python-rosetta-stone-reading-files-and-column-transformations
+
+
+```{r}
+libs <- c('dplyr', 'tidyr', 'stringr',  # wrangling
+          'knitr','kableExtra',         # table styling
+          'ggplot2','gridExtra',        # plots
+          'viridis',                    # visuals styling
+          'reticulate')                 # e pluribus unum
+# devtools::install_cran(c('pacman', libs))
+# pacman::p_load(libs)
+invisible(lapply(libs, library, character.only = TRUE))
+```
+```{r}
+install.packages(c("gt", "palmerpenguins", 'vroom',
+  'readr'))
+
+libs <- c('dplyr', 'stringr',     # wrangling
+          'palmerpenguins', 'gt', # data, table styling
+          'vroom', 'readr',       # read & write data
+          'tidyr', 'purrr',       # wrangle & iterate
+          'fs',                   # file system
+          'reticulate')           # python support 
+invisible(lapply(libs, library, character.only = TRUE))
+```
+
+
+
+```{r}
+# use_python("/usr/bin/python")
+use_python("/usr/bin/python3")
+df_orig <- penguins %>% 
+  mutate_if(is.integer, as.double) %>% 
+  select(-contains("length"), -contains("depth"))
+
+```
+```{python}
+import pandas as pd
+import glob
+pd.set_option('display.max_columns', None)
+
+```
+```{r}
+df_orig %>% 
+  count(species) %>% 
+  gt()
+
+```
+```{r}
+fp <- "data/penguins/"
+df_orig %>%
+  group_by(species) %>% 
+  # slicing off the first n entries (here by group
+  slice_head(n = 1) %>% 
+  ungroup() %>% 
+  nest(data = c(-species)) %>% 
+  pwalk(function(species, data) 
+    write_csv(data, 
+      file.path(fp, str_c(species, "_penguins.csv"))))
+
+```
+```{r}
+single_file <- vroom(
+  paste0(fp, "Adelie_penguins.csv", col_types = cols()))
+single_file %>% 
+  gt()
+
+```
+
+```{python}
+single_file = pd.read_csv(r.fp + "Adelie_penguins.csv")
+single_file
+
+```
+```{r}
+(files <- fs::dir_ls(fp, glob = "*penguins.csv"))
+## Adelie_penguins.csv    Chinstrap_penguins.csv Gentoo_penguins.csv
+df <- vroom(files, col_types = cols(), id = "name")
+df %>% 
+  gt()
+
+```
+In Python, we use glob to grab the file names:
+```{python}
+files_py = glob.glob(r.fp + "*penguins.csv")
+files_py
+# df_py = pd.concat((pd.read_csv(f) for f in files_py))
+# file name. Luckily, we can get that information through the nifty assign function:
+df_py = pd.concat((pd.read_csv(f).assign(name = f) for f in files_py))
+df_py
+
+df_py
+
+```
+
+```{r}
+df %>% 
+  separate(name, into = c("name", "filetype"), sep = "\\.") %>% 
+  gt()
+```
+
+
+```{r}
+df %>% 
+  separate(name, into = c("name", "filetype"), sep = "\\.") %>% 
+  separate(name, into = c("species", "animal"), sep = "_") %>% 
+  gt()
+
+```
+```{python}
+df_py = pd.concat((pd.read_csv(f).assign(name = f) for f in files_py))
+df_py[['name', 'filetype']] = 
+  df_py['name'].str.split('\\.', expand=True)
+df_py[['species', 'animal']] = df_py['name'].str.split('_', expand=True)
+df_py = df_py.drop('name', axis = 'columns')
+df_py
+
+```
+
+```{r}
+df %>% 
+  separate(name, into = c("name", "filetype"), sep = "\\.") %>% 
+  separate(name, into = c("species", "animal"), sep = "_") %>% 
+  gt()
+
+
+```
+```{r}
+df %>% 
+  separate(name, into = c("name", "filetype"), sep = "\\.") %>% 
+  separate(name, into = c("species", "animal"), sep = "_") %>% 
+  unite(species, animal, col = "name", sep = "_") %>% 
+  unite(name, filetype, col = "name", sep = ".") %>% 
+  gt()
+
+```
+```{python} 
+df_py['name'] = df_py['species'] + "_" + df_py['animal'] + "." + df_py['filetype']
+df_py = df_py.drop(['species', 'animal', 'filetype'], axis = 'columns')
+df_py
+
+```
+
+```{python}
+foo = [1, 2, 3]
+print(foo[0])
+print(r.iris.loc[:5, ["Sepal.Length", "Species"]])
+
+```
+
+```{python}
+import pandas
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+
+```
+```{python}
+train, test = train_test_split(r.iris,
+                test_size = 0.4, random_state = 4321)
+
+X = train.drop('Species', axis = 1)
+y = train.loc[:, 'Species'].values
+X_test = test.drop('Species', axis = 1)
+y_test = test.loc[:, 'Species'].values
+```
+```{python}
+tree = DecisionTreeClassifier(random_state=4321)
+clf = tree.fit(X, y)
+pred = clf.predict(X_test)
+
+```
+

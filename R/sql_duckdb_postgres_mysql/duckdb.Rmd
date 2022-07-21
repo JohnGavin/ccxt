@@ -1,0 +1,169 @@
+---
+title: "Untitled"
+author: "John Gavin"
+date: '2022-04-03'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, tidy = "styler"
+  # , connection = "con"
+)
+```
+
+## libs
+
+```{r libs}
+# https://lorentzen.ch/index.php/2022/04/02/duckdb-quacking-sql/
+# install.packages("farff")
+# pip install pyarrow
+pacman::p_load(arrow, OpenML, duckdb, tidyverse)
+```
+
+## initializing DuckDB and running a simple query
+
+```{r r duckdb}
+# Load data
+df <- getOMLDataSet(data.id = 42092)$data %>% tibble()
+
+# Initialize duckdb, register df and materialize first query
+con = dbConnect(duckdb())
+# con <- dbConnect(RSQLite::SQLite(), ":memory:")
+duckdb_register(con, name = "df", df = df)
+con %>% 
+  dbSendQuery("SELECT * FROM df limit 5") %>% 
+  dbFetch()
+
+```
+
+```{python py duckdb}
+import duckdb
+import pandas as pd
+from sklearn.datasets import fetch_openml
+```
+```{python py duckdb2}
+# Load data
+df = fetch_openml(data_id=42092, as_frame=True)["frame"]
+```
+```{python py duckdb3}
+# Initialize duckdb, register df and fire first query
+# If out-of-RAM: 
+#   duckdb.connect("py.duckdb", 
+#     config={"temp_directory": "a_directory"})
+con = duckdb.connect()
+```
+```{python py duckdb4}
+con.register("df", df)
+```
+```{python py duckdb5}
+con.execute("SELECT * FROM df limit 5").fetchdf()
+```
+
+## Average price per grade ----
+
+```{r r Average price per grade}
+query <- 
+  "
+  SELECT AVG(price) avg_price, grade 
+  FROM df 
+  GROUP BY grade
+  ORDER BY grade
+  "
+avg <- con %>% 
+  dbSendQuery(query) %>% 
+  dbFetch()
+
+avg
+
+```
+```{python py Average price per grade}
+# Average price per grade
+query = """
+  SELECT AVG(price) avg_price, grade 
+  FROM df 
+  GROUP BY grade
+  ORDER BY grade
+  """
+avg = con.execute(query).fetchdf()
+avg
+```
+
+## save “df” as a parquet file and “avg” as a csv file ----
+```{r r write_parquet}
+arrow::write_parquet(df, "housing.parquet")
+write.csv(avg, "housing_avg.csv", row.names = FALSE)
+```
+```{python py .to_parquet}
+# Save df and avg to different file types
+df.to_parquet("housing.parquet")  # pyarrow=7
+avg.to_csv("housing_avg.csv", index=False)
+```
+
+## load some columns of “housing.parquet” data ----
+```{r}
+# FIXME: add sql chunk to issue query
+# NB: R uses " python """
+query2 <- "
+  SELECT price, sqft_living, A.grade, avg_price
+  FROM 'housing.parquet' A
+  LEFT JOIN 'housing_avg.csv' B
+  ON A.grade = B.grade
+  WHERE B.avg_price > 1000000
+  "
+
+expensive_grades <- con %>% 
+  dbSendQuery(query2) %>% 
+  dbFetch()
+
+head(expensive_grades)
+
+# dbDisconnect(con)
+```
+```{python}
+# NB: R uses " python """
+# query2 = """
+#   SELECT price, sqft_living, A.grade, avg_price
+#   FROM 'housing.parquet' A
+#   LEFT JOIN 'housing_avg.csv' B
+#   ON A.grade = B.grade
+#   WHERE B.avg_price > 1000000
+#   """
+query2 = r.query2
+expensive_grades = con.execute(query2).fetchdf()
+expensive_grades
+
+# con.close()
+```
+
+### SQL
+```{sql print sql, connection=con, code = query2}
+# Printing
+```
+
+```{sql 9, connection = con, output.var = "Order_Detail"}
+DROP TABLE IF EXISTS Order_Detail
+```
+```{r 10, output.var = "Order_Detail3"}
+dbSendStatement(con, "DROP TABLE IF EXISTS Order_Detail")
+```
+
+
+```{sql exec sql,  connection = con, output.var = "Order_Detail2"}
+-- use EXEC to run the code.
+EXEC(?query)
+```
+
+## pragmas
+https://duckdb.org/docs/sql/pragmas
+```{r, eval=FALSE}
+database_list, show_tables, table_info, show
+-- list all databases, usually one
+PRAGMA database_list;
+-- list all tables
+PRAGMA show_tables;
+-- get info for a specific table
+PRAGMA table_info('table_name');
+-- also show table structure, but slightly different format (for compatibility)
+PRAGMA show('table_name');
+```
+

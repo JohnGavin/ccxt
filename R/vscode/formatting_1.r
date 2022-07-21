@@ -1,0 +1,1 @@
+# https://github.com/REditorSupport/vscode-R/wiki/R-Language-Service#diagnostics

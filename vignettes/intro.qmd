@@ -1,18 +1,45 @@
 ---
 title: "ccxt quatro"
 subtitle: "Until now!"
-format: html
+format: 
+  revealjs:
+    chalkboard: true
+  # html:
+  #   code-link: true
 editor: source
 execute:
-  echo: false
+  echo: true
+bibliography: references.bib
+# output: rmarkdown::html_vignette
+output:
+  # https://mattwarkentin.github.io/fidelius/
+  fidelius::html_password_protected:
+    # do not store this file in public - password is visible
+    password: "pw1234!" 
+    hint = "A very bad password!"
+    output_format: 
+      rmarkdown::html_document:
+        toc: true
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Title of your vignette}
+  %\usepackage[UTF-8]{inputenc}
 ---
 
 ```{r setup, include=FALSE}
-# str(knitr::opts_chunk$get())
-knitr::opts_chunk$set(echo = TRUE, tidy = "styler",
-  warning = FALSE, message = FALSE, echo = FALSE,
-  fig.path = "./inst/pngs/"
+knitr::opts_chunk$set(
+  echo = TRUE, 
+  warning = FALSE, 
+  message = FALSE, 
+  tidy = "styler",
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = c("./inst/pngs/", 
+    "man/figures/README-")[1],
+  out.width = "100%"
 )
+# str(knitr::opts_chunk$get())
+
 pacman::p_load(targets, dplyr, stringr)
 
 targets::tar_config_set(store = 
@@ -25,25 +52,31 @@ targets::tar_config_get("store") # "_targets"
 ```
 
 ## info
-### ccxt 
-```{r ccxt_info}
+
+citation[@abind]
+
+### ccxt
+
+```{r}
+#| label: ccxt_info
 tar_read(ccxt_info)
 ```
 
-
 ## FTX
+
 ```{r ftx_info}
 tar_read(ftx_info)
 ```
 
-
 ## FTX markets
+
 ```{r ftx_markets}
 top_of_list <- function(x) str(x, max.level = 1, list.len = 4)
 tar_read(ftx_markets) %>% top_of_list()
 ```
 
 ## ftx properties
+
 ```{r ftx_has}
 tar_load(ftx_has)
 ftx_has %>% top_of_list()
@@ -51,24 +84,27 @@ ftx_has %>% top_of_list()
 ```
 
 ## ftx tickers
+
 ```{r tickers_ftx}
 tar_load(tickers_ftx) %>% top_of_list()
 tar_load(inpp)
 ```
 
 ## FTX ticker info
-+ Parameters
-  + pairs: `r inpp$pairs`
-  + origin = `r inpp$origin`
-  + timeframe = `r inpp$timeframe`, 
-  + limit = `r inpp$limit`
 
-Sample info for dex aggregators on solana. 
-```{r tickers_info}
-tar_load(tickers_info) 
+-   Parameters
+    -   pairs: `r inpp$pairs`
+    -   origin = `r inpp$origin`
+    -   timeframe = `r inpp$timeframe`,
+    -   limit = `r inpp$limit`
+
+Sample info for dex aggregators on solana.
+
+```{r info_tckrs_ftx}
+tar_load(info_tckrs_ftx) 
 # solana coins for dex aggregators
 coins_sol <- c(Orca = 'ORCA', Raydium = 'RAY', Mango = 'MNGO')
-tickers_info %>% 
+info_tckrs_ftx %>% 
   filter(symbol %>% str_detect(paste(coins_sol, collapse='|'))) %>% 
   glimpse()
 ```
@@ -78,17 +114,16 @@ tar_read(tickers_not_info)
 tar_read(future_spot_tbl)
 ```
 
-
 ## FTX ohlcv snapshots
 
 ```{r ftx_ohlcv_snapshots}
 tar_read(ftx_ohlcv_snapshots)
 ```
 
-
 # Alternative exchanges
-Alternative exchanges are available.
-## tickers_binance
+
+Alternative exchanges are available. \## tickers_binance
+
 ```{r tickers_binance}
 tar_read(tickers_binance)  %>% top_of_list()
 # columns vary by exchange - binance offers more info than most
@@ -97,17 +132,18 @@ tar_read(tickers_not_info_binance) %>%
   glimpse()
 ```
 
-
 # Appendix
 
-## TODOs  
-+ retrieve the symbols available for trading in an exchange
-  + e.g. Star Atlas (ATLAS & POLIS), Oxigen (OXY), Orca (ORCA), Raydium (RAY), Mango Markets (MNGO)
-  + https://azcoinnews.com/top-crypto-strategist-names-5-solana-projects-with-massive-growth.html
-    + Bitgert (BRISE), Helium (HNT), Monero (XMR), Fantom (FTM), Avalanche (AVAX), 
-    + https://www.analyticsinsight.net/avalanche-avax-fantom-ftm-helium-hnt-bitgert-brise-monero-xmr-the-best-crypto-for-2022/
+## TODOs
+
+-   retrieve the symbols available for trading in an exchange
+    -   e.g. Star Atlas (ATLAS & POLIS), Oxigen (OXY), Orca (ORCA), Raydium (RAY), Mango Markets (MNGO)
+    -   https://azcoinnews.com/top-crypto-strategist-names-5-solana-projects-with-massive-growth.html
+        -   Bitgert (BRISE), Helium (HNT), Monero (XMR), Fantom (FTM), Avalanche (AVAX),
+        -   https://www.analyticsinsight.net/avalanche-avax-fantom-ftm-helium-hnt-bitgert-brise-monero-xmr-the-best-crypto-for-2022/
 
 ## Render
+
 ```{r browseURL, eval = FALSE}
 # library(rmarkdown)
 # render("intro.Rmd")
@@ -115,3 +151,5 @@ browseURL("intro.html")
 # dependency graph 
 tar_visnetwork() 
 ```
+
+## References

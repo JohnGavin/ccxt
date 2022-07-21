@@ -46,3 +46,5 @@ library(ccxt)
 -   GitHub Actions to re-render `README.Rmd` every time you push.
     -   See <https://github.com/r-lib/actions/tree/master/examples>
     -   e.g. commit and push to see the updated plots
+
+## References

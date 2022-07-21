@@ -1,12 +1,17 @@
 ---
 title: "ccxt README"
 # subtitle: "Until now!"
-format: markdown_github
-# output:
-#   github_document:
 editor: source
 execute:
   echo: false
+format: markdown_github
+# output:
+#   github_document:
+# output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteEngine{knitr::knitr}
+  %\VignetteIndexEntry{Title of your vignette}
+  %\usepackage[UTF-8]{inputenc}
 ---
 
 <!-- README.md is generated from README.qmd. 
@@ -16,22 +21,40 @@ execute:
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   echo = TRUE, 
+  warning = FALSE, 
+  message = FALSE, 
   tidy = "styler",
   collapse = TRUE,
   comment = "#>",
-  fig.path = "man/figures/README-",
+  fig.path = c("./inst/pngs/", 
+    "man/figures/README-")[1],
   out.width = "100%"
 )
+# str(knitr::opts_chunk$get())
+```
+```{r setup targets, include=FALSE}
+pacman::p_load(targets, dplyr, stringr)
+
+targets::tar_config_set(store = 
+  # _targets in ./inst to pass R CMD check
+  # WARNING: relative to Rmd vignette directory.
+    # see ./_targets.yaml to move _targets folder inside ./inst/
+    here::here('inst', '_targets')
+  )
+targets::tar_config_get("store") # "_targets"
 ```
 
 # `ccxt` goals
 
 <!-- badges: start -->
+
 <!-- badges: end -->
 
-+ (H) OHLCV snapshots from FTX, Binance and Coinbase.
-+ (M) 
-+ (L) FTX perpetuals
+-   \(H\) OHLCV snapshots from FTX, Binance and Coinbase.
+
+-   \(M\)
+
+-   \(L\) FTX perpetuals
 
 ## Installation
 
@@ -41,8 +64,7 @@ install.packages("ccxt")
 ```
 -->
 
-+ Development version from
-[GitHub](https://github.com/JohnGavin/ccxt):
+-   Development version from [GitHub](https://github.com/JohnGavin/ccxt):
 
 ``` r
 if (!require(devtools)) install.packages("devtools")
@@ -56,16 +78,26 @@ library(ccxt)
 ## basic example code
 ```
 
+```{r ccxt_info, echo = TRUE}
+#| label: ccxt_info
+tar_read(ccxt_info)
+```
+Information on each coin listed on FTX.
+```{r tickers_not_info, echo = FALSE}
+tar_read(tickers_not_info)
+```
 
 ### TODOs
-+ render `README.Rmd` 
-  - `devtools::build_readme()` 
-+ GitHub Actions to re-render `README.Rmd` every time you push. 
-  + See <https://github.com/r-lib/actions/tree/master/examples>
-  + e.g. commit and push to see the updated plots
 
+-   render `README.Rmd`
+    -   `devtools::build_readme()`
+-   GitHub Actions to re-render `README.Rmd` every time you push.
+    -   See <https://github.com/r-lib/actions/tree/master/examples>
+    -   e.g. commit and push to see the updated plots
 
 ```{r ohlcv, echo = FALSE}
 # ./ccxt/man/figures via fig.path = "man/figures/README-",
 # plot(ohlcv)
 ```
+
+## References
