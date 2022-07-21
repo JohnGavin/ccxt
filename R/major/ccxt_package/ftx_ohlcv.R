@@ -1,13 +1,13 @@
 # imports ----
 #' @importFrom dplyr '%>%' arrange mutate desc 
-#' @importFrom tibble as_tibble 
-#' @importFrom purrr map map_df 
-#' @importFrom rlang as_function 
-#' @importFrom lubridate as_datetime 
 import::here(dplyr, `%>%`, arrange, mutate, desc) # , rename_with filter, group_by, , summarize, count, relocate, rename
+#' @importFrom tibble as_tibble 
 import::here(tibble, as_tibble)
+# ' @ importFrom purrr map map_df 
 import::here(purrr, map, map_df)
+#' @importFrom rlang as_function 
 import::here(rlang, as_function)
+#' @importFrom lubridate as_datetime 
 import::here(lubridate, as_datetime)
 
 #' @title FTX OHLCV snapshots
