@@ -1,5 +1,8 @@
 
 
+# https://github.com/ccxt/ccxt/wiki/Manual#instantiation
+
+
 pacman::p_load(reticulate, tidyverse, lubridate)
 
 

@@ -374,15 +374,9 @@ pre code {
 <!-- badges: start -->
 <!-- badges: end -->
 <ul>
-<li><ol start="8" style="list-style-type: upper-alpha">
-<li>OHLCV snapshots from FTX, Binance and Coinbase.</li>
-</ol></li>
-<li><ol start="13" style="list-style-type: upper-alpha">
-<li></li>
-</ol></li>
-<li><ol start="12" style="list-style-type: upper-alpha">
-<li>FTX perpetuals</li>
-</ol></li>
+<li><p><span class="math inline">\(H\)</span> OHLCV snapshots from FTX, Binance and Coinbase.</p></li>
+<li><p><span class="math inline">\(M\)</span></p></li>
+<li><p><span class="math inline">\(L\)</span> FTX perpetuals</p></li>
 </ul>
 <div id="installation" class="section level2">
 <h2>Installation</h2>
@@ -401,6 +395,26 @@ devtools::install_github(&quot;JohnGavin/ccxt&quot;)</code></pre>
 <h2>Example</h2>
 <pre class="r"><code>library(ccxt)
 ## basic example code</code></pre>
+<pre class="r"><code>tar_read(ccxt_info)
+#&gt; $version__
+#&gt; [1] &quot;1.66.21&quot;
+#&gt; 
+#&gt; $TICK_SIZE
+#&gt; [1] 4
+#&gt; 
+#&gt; $exchanges_sample
+#&gt; [1] &quot;btcbox&quot;             &quot;coinone&quot;            &quot;independentreserve&quot;
+#&gt; [4] &quot;kraken&quot;</code></pre>
+<p>Information on each coin listed on FTX.</p>
+<pre><code>#&gt; # A tibble: 1 × 22
+#&gt;   name  enabled postOnly priceIncrement sizeIncrement minProvideSize  last   bid
+#&gt;   &lt;chr&gt; &lt;lgl&gt;   &lt;lgl&gt;             &lt;dbl&gt;         &lt;dbl&gt;          &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+#&gt; 1 1INC… TRUE    FALSE            0.0001             1              1  1.47  1.47
+#&gt; # … with 14 more variables: ask &lt;dbl&gt;, price &lt;dbl&gt;, type &lt;chr&gt;,
+#&gt; #   underlying &lt;chr&gt;, restricted &lt;lgl&gt;, highLeverageFeeExempt &lt;lgl&gt;,
+#&gt; #   largeOrderThreshold &lt;dbl&gt;, change1h &lt;dbl&gt;, change24h &lt;dbl&gt;,
+#&gt; #   changeBod &lt;dbl&gt;, quoteVolume24h &lt;dbl&gt;, volumeUsd24h &lt;dbl&gt;,
+#&gt; #   priceHigh24h &lt;dbl&gt;, priceLow24h &lt;dbl&gt;</code></pre>
 <div id="todos" class="section level3">
 <h3>TODOs</h3>
 <ul>
@@ -415,6 +429,9 @@ devtools::install_github(&quot;JohnGavin/ccxt&quot;)</code></pre>
 </ul></li>
 </ul>
 </div>
+</div>
+<div id="references" class="section level2">
+<h2>References</h2>
 </div>
 </div>
 

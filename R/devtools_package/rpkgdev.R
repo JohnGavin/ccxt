@@ -3,11 +3,12 @@
 # https://rpkgdev-sicss-covenant.netlify.app/intro/demo/#system-setup
 install.packages("available")
 
+
 devtools::has_devel()
 
 devtools::dev_sitrep()
 # devtools::update_packages("devtools")
-
+library("usethis")
 usethis::git_sitrep()
 # Managing Git(Hub) Credentials; 
 # “Managing GitHub credentials from R, difficulty level linux”.
