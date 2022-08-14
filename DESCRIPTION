@@ -16,7 +16,7 @@ License: file LICENSE
 Depends:
     R (>= 3.5.0)
 Imports: 
-    import, purrr, dplyr, tibble, rlang, lubridate
+    purrr, dplyr, tibble, rlang, lubridate, import
 Suggests:
     targets, tarchetypes, pacman,
     reticulate, 

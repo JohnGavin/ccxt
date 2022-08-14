@@ -30,8 +30,10 @@ a tibble of ohlcv snapshots by coin, by datetime.
 FTX OHLCV snapshots
 }
 \examples{
+\dontrun{
 # Connection to FTX api (requires key/secret)
-ftx = reticulate::import('ccxt')$ftx(
+ccxt <- reticulate::import('ccxt')
+ftx = ccxt$ftx(
   list(
     enableRateLimit = "True",
     apiKey          = Sys.getenv('FTX_key'),
@@ -43,6 +45,7 @@ ftx_ohlcv (
     timeframe = c("15s"), # 15 sec timesteps
     limit = 2L, # two timesteps
     ftx = ftx)  # FTX pointer via reticulate::import('ccxt')$ftx
+}
 }
 \seealso{
 medium.com/alphaimpact/how-to-link-your-ftx-com-api-keys-so-you-can-copy-trades-or-be-copied-9-simple-steps-172372888034
