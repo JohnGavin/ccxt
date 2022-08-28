@@ -44,6 +44,13 @@ targets::tar_config_set(store =
 targets::tar_config_get("store") # "_targets"
 ```
 
+![Visualization of this repo](./diagram.svg)
+
++ using the [repo-visualizer](https://github.com/githubocto/repo-visualizer) GitHub Action
++ [diagram.yml](/.github/workflows/diagram.yml). 
+  + excluding `ignore` and `.github` folders, via `excluded_paths` config.
+
+
 # `ccxt` goals
 
 <!-- badges: start -->
